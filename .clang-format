@@ -1,5 +1,7 @@
 ﻿---
 DerivePointerAlignment: 'false'
 PointerAlignment: Left
-
+BinPackArguments: false
+AllowAllConstructorInitializersOnNextLine: false
+AllowAllArgumentsOnNextLine: false
 ...

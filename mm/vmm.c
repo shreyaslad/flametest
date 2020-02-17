@@ -49,7 +49,8 @@ uint64_t* getpaddr(void* vaddr) {
 }
 
 // maps a virtual address to a physical address
-void vmap(uint64_t* vaddr, uint64_t* paddr) {
+// this only maps 1 page, need to do more :/
+void vmap(uint64_t* vaddr, uint64_t* paddr, size_t pages) {
   offset_t offset = vtoof(vaddr);
 
   uint64_t* pml4ptr =
@@ -66,10 +67,15 @@ void vmap(uint64_t* vaddr, uint64_t* paddr) {
       if ((pml2ptr[offset.pml2off] & TABLEPRESENT) == 1) {
         pml2ptr[offset.pml2off] =
             (uint64_t)paddr | TABLEPRESENT | TABLEWRITE | TABLEHUGE;
+
+        sprint("Derived Addr1: ");
+        sprint_uint(pml2ptr[offset.pml2off] & RMFLAGS);
         invlpg(vaddr);
       } else {
         pml2ptr[offset.pml2off] =
             (uint64_t)paddr | TABLEPRESENT | TABLEWRITE | TABLEHUGE;
+        sprint("Derived Addr2: ");
+        sprint_uint(pml2ptr[offset.pml2off] & RMFLAGS);
         invlpg(vaddr);
       }
     } else {
@@ -78,6 +84,8 @@ void vmap(uint64_t* vaddr, uint64_t* paddr) {
 
       pml2ptr[offset.pml2off] =
           (uint64_t)paddr | TABLEPRESENT | TABLEWRITE | TABLEHUGE;
+      sprint("Derived Addr3: ");
+      sprint_uint(pml2ptr[offset.pml2off] & RMFLAGS);
       invlpg(vaddr);
     }
   } else {
@@ -89,20 +97,84 @@ void vmap(uint64_t* vaddr, uint64_t* paddr) {
 
     pml2ptr[offset.pml2off] =
         (uint64_t)paddr | TABLEPRESENT | TABLEWRITE | TABLEHUGE;
+    char buf[20];
+    sprint("Derived Addr: ");
+    htoa(pml2ptr[offset.pml2off] & RMFLAGS, buf);
+    sprint(buf);
+
+    memset(buf, 0, 20);
+    sprint("\nEntry: ");
+    htoa(pml2ptr[offset.pml2off], buf);
+    sprint(buf);
     invlpg(vaddr);
   }
+
+  UNUSED(pages);
 }
 
-void vfree(uint64_t* vaddr, size_t bytes) {
+void test() {
+  char buf[20];
+  sprint("reach1");
+  offset_t offset = vtoof((uint64_t*)0x00000000FD000000);
+
+  uint64_t* pml4ptr =
+      getPML4(); // the pml4 is already created in the bootloader
+
+  sprint("\nPml4Ptr: ");
+  htoa((uint64_t)pml4ptr, buf);
+  sprint(buf);
+  memset(buf, 0, 20);
+
+  sprint("\nPml4Offset: ");
+  htoa(pml4ptr[offset.pml4off], buf);
+  sprint(buf);
+  memset(buf, 0, 20);
+
+  uint64_t* pml3ptr = NULL;
+  uint64_t* pml2ptr = NULL;
+
+  sprint("\nreach2");
+
+  pml3ptr = pmalloc(1);
+  sprint("\nPml3Ptr: ");
+  htoa((uint64_t)pml3ptr, buf);
+  sprint(buf);
+  memset(buf, 0, 20);
+  pml4ptr[offset.pml4off] = (uint64_t)pml3ptr | TABLEPRESENT | TABLEWRITE;
+
+  sprint("\nPml3Offset: ");
+  htoa(pml3ptr[offset.pml3off], buf);
+  sprint(buf);
+  memset(buf, 0, 20);
+
+  pml2ptr = pmalloc(1);
+  sprint("\nPml2Ptr: ");
+  htoa((uint64_t)pml3ptr, buf);
+  sprint(buf);
+  memset(buf, 0, 20);
+  pml3ptr[offset.pml3off] = (uint64_t)pml2ptr | TABLEPRESENT | TABLEWRITE;
+
+  sprint("\nPml2Offset: ");
+  htoa(pml2ptr[offset.pml2off], buf);
+  sprint(buf);
+  memset(buf, 0, 20);
+
+  sprint("\nreach4");
+
+  pml2ptr[offset.pml2off] =
+      (uint64_t)0x00000000FD000000 | TABLEPRESENT | TABLEWRITE | TABLEHUGE;
+
+  sprint("\nreach5");
+}
+
+void vfree(uint64_t* vaddr, size_t pages) {
   offset_t offset = vtoof(vaddr);
   uint64_t* pml4ptr = getPML4();
-
-  uint64_t pages = bytes / PAGESIZE;
 
   uint64_t* pml3ptr = (uint64_t*)(pml4ptr[offset.pml4off] & RMFLAGS);
   uint64_t* pml2ptr = (uint64_t*)(pml3ptr[offset.pml3off] & RMFLAGS);
 
-  for (uint64_t i = offset.pml2off; i < pages; i++) {
+  for (uint64_t i = offset.pml2off; i < pages + 1; i++) {
     pml2ptr[i] = 0; // TODO: free page table if necessary
   }
 

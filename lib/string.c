@@ -11,8 +11,8 @@
 
 #include <stdint.h>
 
-void itoa(int n, char str[]) {
-  int i, sign;
+void itoa(uint64_t n, char str[]) {
+  uint64_t i, sign;
   if ((sign = n) < 0)
     n = -n;
   i = 0;
@@ -38,29 +38,29 @@ void itoa_uint8(uint8_t num, char* str) {
   reverse(str);
 }
 
-void hex_to_ascii(int64_t n, char* str) {
-  append(str, '0');
-  append(str, 'x');
-  char zeros = 0;
+void htoa(uint64_t in, char* str) {
+  uint32_t pos = 0;
+  uint8_t tmp;
 
-  int64_t tmp;
-  int i;
-  for (i = 28; i > 0; i -= 4) {
-    tmp = (n >> i) & 0xF;
-    if (tmp == 0 && zeros == 0)
-      continue;
-    zeros = 1;
-    if (tmp > 0xA)
-      append(str, tmp - 0xA + 'a');
-    else
-      append(str, tmp + '0');
+  str[pos++] = '0';
+  str[pos++] = 'x';
+
+  for (uint16_t i = 60; i > 0; i -= 4) {
+    tmp = (uint8_t)((in >> i) & 0xf);
+    if (tmp >= 0xa) {
+      str[pos++] = (tmp - 0xa) + 'A';
+    } else {
+      str[pos++] = tmp + '0';
+    }
   }
 
-  tmp = n & 0xF;
-  if (tmp >= 0xA)
-    append(str, tmp - 0xA + 'a');
-  else
-    append(str, tmp + '0');
+  tmp = (uint8_t)(in & 0xf);
+  if (tmp >= 0xa) {
+    str[pos++] = (tmp - 0xa) + 'A';
+  } else {
+    str[pos++] = tmp + '0';
+  }
+  str[pos] = '\0'; // nullify
 }
 
 void reverse(char* s) {

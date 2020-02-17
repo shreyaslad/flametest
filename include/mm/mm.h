@@ -13,7 +13,5 @@
 
 extern uint64_t KNL_HIGH_VMA;
 
-void initMem(multiboot_info_t* mbd);
-
 void* malloc(size_t bytes);
 void free(void* vaddr);

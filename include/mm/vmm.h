@@ -10,9 +10,12 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <mm/pmm.h>
+#include <function.h>
+#include <string.h>
+#include <drivers/serial.h>
 
 #define TABLESIZE 0x1000
-#define PAGESIZE 2000000
+#define PAGESIZE 0x2000000
 
 #define RMFLAGS 0x000FFFFFFFFFF000
 #define TABLEPRESENT (1 << 0)
@@ -33,5 +36,7 @@ void tlbflush();
 uint64_t* getpaddr(void* vaddr);
 offset_t vtoof(uint64_t* vaddr); // virtual address to offset
 
-void vmap(uint64_t* vaddr, uint64_t* paddr);
-void vfree(uint64_t* vaddr, size_t bytes);
+void vmap(uint64_t* vaddr, uint64_t* paddr, size_t pages);
+void vfree(uint64_t* vaddr, size_t pages);
+
+void test();

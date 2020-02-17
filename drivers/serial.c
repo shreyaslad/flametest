@@ -29,14 +29,14 @@ void sprint(char* message) {
   }
 }
 
-void sprint_int(int num) {
-  char toprint[33];
+void sprint_int(int64_t num) {
+  char toprint[63];
   itoa(num, toprint);
   sprint(toprint);
 }
 
-void sprint_uint(unsigned int num) {
-  char toprint[33];
+void sprint_uint(uint64_t num) {
+  char toprint[63];
   itoa(num, toprint);
   sprint(toprint);
 }

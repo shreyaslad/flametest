@@ -14,7 +14,7 @@
 #include <boot/multiboot.h>
 
 #define MEMBASE 0x100000
-#define PAGESIZE 2000000 // 2mb pages
+#define PAGESIZE 0x2000000 // 2mb pages
 
 extern uint64_t __kernel_end;
 
@@ -29,6 +29,8 @@ typedef struct {
 
 void memcpy(uint8_t* source, uint8_t* dest, uint32_t nbytes);
 void memset(void* dest, int val, size_t len);
+
+void initMem(multiboot_info_t* mbd);
 
 /* Physical Memory Allocation */
 void* pmalloc(size_t pages);

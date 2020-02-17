@@ -96,10 +96,14 @@ void read(uint32_t sector, uint32_t sector_high) {
   if (sector_high == 1) {
   }
   if (ata_pio == 0) {
-    ata_pio28(ata_controller, 1, ata_drive,
+    ata_pio28(ata_controller,
+              1,
+              ata_drive,
               sector); // Read disk into ata_buffer
   } else {
-    ata_pio48(ata_controller, 1, ata_drive,
+    ata_pio48(ata_controller,
+              1,
+              ata_drive,
               sector); // Read disk into ata_buffer
   }
   bool f = false;
@@ -115,10 +119,14 @@ void read(uint32_t sector, uint32_t sector_high) {
     // Sometimes the drive shuts off, so we need to wait for it to turn on
     wait(2000);
     if (ata_pio == 0) {
-      ata_pio28(ata_controller, 1, ata_drive,
+      ata_pio28(ata_controller,
+                1,
+                ata_drive,
                 sector); // Read disk into ata_buffer
     } else {
-      ata_pio48(ata_controller, 1, ata_drive,
+      ata_pio48(ata_controller,
+                1,
+                ata_drive,
                 sector); // Read disk into ata_buffer
     }
 
@@ -161,7 +169,7 @@ void read_disk(uint32_t sector) {
     temp++;
     good += (uint16_t)(*temp << 8);
     temp++;
-    hex_to_ascii(good, str2);
+    htoa(good, str2);
     kprint(str2);
     kprint(" ");
     for (int i = 0; i < 32; i++) {

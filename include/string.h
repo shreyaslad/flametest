@@ -1,10 +1,9 @@
 /*
-                                string.h
-                                Copyright Shreyas Lad (PenetratingShot) 2019
-                                Licensed under the MIT License
+   string.h
+   Copyright Shreyas Lad (PenetratingShot) 2019
+   Licensed under the MIT License
 
-                                Handy string manipulation and conversion
-   functions
+   Handy string manipulation and conversion functions
 */
 
 #pragma once
@@ -15,9 +14,9 @@
 #include <stddef.h>
 #include <stdint.h>
 
-void itoa(int n, char* str);
+void itoa(uint64_t n, char* str);
 void itoa_uint8(uint8_t num, char* str);
-void hex_to_ascii(int64_t n, char* str);
+void htoa(uint64_t in, char* str);
 
 void backspace(char* s);
 

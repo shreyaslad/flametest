@@ -30,14 +30,22 @@ void memset(void* dest, int val, size_t len) {
  * Private PMM API *
  *******************/
 
+/* Initialization */
+void initMem(multiboot_info_t* mbd) {
+  totalmem = (uint64_t)mbd->mem_upper;
+  bitmapEntries = (uint64_t)(((totalmem * 1000) / PAGESIZE) /
+                             8); // calculate the maximum amount of entries
+                                 // possible in the bitmap to not overflow
+
+  memset(bitmap, 0, (totalmem * 1000) / PAGESIZE / 8);
+}
+
 void* pmalloc(size_t pages) {
   uint64_t firstBit = 0;
   uint64_t concurrentBits = 0;
   uint64_t bitsToAlloc = pages + 1;
 
-  uint64_t totalBitsInBitmap = pages * 64;
-
-  for (uint64_t i = 0; i < totalBitsInBitmap; i++) {
+  for (uint64_t i = 0; i < bitmapEntries * 64; i++) {
     if (getAbsoluteBitState(bitmap, i) == 0) {
       if (concurrentBits == 0) {
         firstBit = i;

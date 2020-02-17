@@ -10,6 +10,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <drivers/colors.h>
+#include <function.h>
 
 typedef struct fbargs {
   uint64_t fbaddr;

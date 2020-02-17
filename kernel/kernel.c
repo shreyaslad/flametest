@@ -21,21 +21,44 @@ void kmain(multiboot_info_t* mbd) {
 
   initMem(mbd);
 
+  char buf[20];
   sprint("\nBitmap Addr: ");
-  sprint_int((uint64_t)bitmap);
+  htoa((uint64_t)bitmap, buf);
+  sprint(buf);
+  memset(buf, 0, 20);
+
   sprint("\nMBD Total Mem: ");
   sprint_uint((uint64_t)mbd->mem_upper);
+
+  sprint("\nFramebuffer: ");
+  htoa(mbd->framebuffer_addr, buf);
+  sprint(buf);
+  memset(buf, 0, 20);
+
+  sprint("\nScreen Width: ");
+  sprint_uint(args.fbwidth);
+  sprint("\nScreen Height: ");
+  sprint_uint(args.fbheight);
+  sprint("\nPitch: ");
+  sprint_uint(args.fbpitch);
   sprint("\n");
 
   read_rtc();
 
-  clear(White);
+  // clear(White);
   uint64_t framebuffer_size = mbd->framebuffer_height * mbd->framebuffer_pitch;
+  sprint("Framebuffer Calc: ");
+  sprint_uint((framebuffer_size + 0x2000000 - 1) / 0x2000000);
+  sprint("\n");
+  /*vmap((uint64_t*)&mbd->framebuffer_addr,
+       (uint64_t*)&mbd->framebuffer_addr,
+       (framebuffer_size + 0x2000000 - 1) / 0x2000000);*/
 
-  vmap((uint64_t*)&args.fbaddr, (framebuffer_size + 0x1000 - 1) / 0x1000);
+  test();
 
   for (uint64_t i = 0; i < 10; i++) {
-    setPixel(100 + i, 100, createColor(White));
+    color_t color = {255, 0, 0};
+    setPixel(10 + i, 10, createColor(color));
   }
 }
 
