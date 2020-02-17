@@ -126,6 +126,7 @@ void test() {
 
   pml3ptr = (uint64_t*)pmalloc(1);
   pml3ptr += KNL_HIGH_VMA;
+  memset(pml3ptr, 0, PAGESIZE);
 
   sprintf("Pml3Ptr: %x\n", (uint64_t)pml3ptr);
   pml4ptr[offset.pml4off] = (uint64_t)pml3ptr | TABLEPRESENT | TABLEWRITE;
@@ -136,6 +137,7 @@ void test() {
 
   pml2ptr = (uint64_t*)pmalloc(1);
   pml2ptr += KNL_HIGH_VMA;
+  memset(pml3ptr, 0, PAGESIZE);
 
   sprintf("Pml2Ptr: %x\n", (uint64_t)pml2ptr);
   pml3ptr[offset.pml3off] = (uint64_t)pml2ptr | TABLEPRESENT | TABLEWRITE;
