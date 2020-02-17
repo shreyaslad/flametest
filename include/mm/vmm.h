@@ -14,6 +14,8 @@
 #include <string.h>
 #include <drivers/serial.h>
 
+extern uint64_t KNL_HIGH_VMA;
+
 #define TABLESIZE 0x1000
 #define PAGESIZE 0x2000000
 

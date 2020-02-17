@@ -43,7 +43,7 @@ void initMem(multiboot_info_t* mbd) {
 void* pmalloc(size_t pages) {
   uint64_t first = 0;
   uint64_t found = 0;
-  for (int i = 0; i < bitmapEntries * 64; i++) {
+  for (uint64_t i = 0; i < bitmapEntries * 64; i++) {
     if (!getAbsoluteBitState(bitmap, i)) {
       if (!found) {
         first = i;

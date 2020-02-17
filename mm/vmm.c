@@ -27,11 +27,10 @@ void tlbflush() { setPML4(getPML4()); }
 offset_t vtoof(uint64_t* vaddr) {
   uint64_t addr = (uint64_t)vaddr;
 
-  offset_t offset = {
-      .pml4off = (uint8_t)((addr & ((uint64_t)0x1ff << 39)) >> 39),
-      .pml3off = (uint8_t)((addr & ((uint64_t)0x1ff << 39)) >> 39),
-      .pml2off = (uint8_t)((addr & ((uint64_t)0x1ff << 39)) >> 39),
-      .pml1off = (uint8_t)((addr & ((uint64_t)0x1ff << 39)) >> 39)};
+  offset_t offset = {.pml4off = (addr >> 39) & 0x1FF,
+                     .pml3off = (addr >> 30) & 0x1FF,
+                     .pml2off = (addr >> 21) & 0x1FF,
+                     .pml1off = (addr >> 12) & 0x1FF};
 
   return offset;
 }
@@ -113,61 +112,41 @@ void vmap(uint64_t* vaddr, uint64_t* paddr, size_t pages) {
 }
 
 void test() {
-  char buf[20];
-  sprint("reach1");
   offset_t offset = vtoof((uint64_t*)0x00000000FD000000);
 
   uint64_t* pml4ptr =
       getPML4(); // the pml4 is already created in the bootloader
 
-  sprint("\nPml4Ptr: ");
-  htoa((uint64_t)pml4ptr, buf);
-  sprint(buf);
-  memset(buf, 0, 20);
+  sprintf("Pml4Ptr: %x\n", (uint64_t)pml4ptr);
 
-  sprint("\nPml4Offset: ");
-  htoa(pml4ptr[offset.pml4off], buf);
-  sprint(buf);
-  memset(buf, 0, 20);
+  sprintf("Pml4Offset: %d\n", offset.pml4off);
 
   uint64_t* pml3ptr = NULL;
   uint64_t* pml2ptr = NULL;
 
-  sprint("\nreach2");
-
   pml3ptr = (uint64_t*)pmalloc(1);
-  sprint("\nPml3Ptr: ");
-  htoa((uint64_t)pml3ptr, buf);
-  sprint(buf);
-  memset(buf, 0, 20);
-  // pml4ptr[offset.pml4off] = (uint64_t)pml3ptr | TABLEPRESENT | TABLEWRITE;
+  pml3ptr += KNL_HIGH_VMA;
 
-  sprint("\nPml3Offset: ");
-  htoa(offset.pml3off, buf);
-  sprint(buf);
-  memset(buf, 0, 20);
+  sprintf("Pml3Ptr: %x\n", (uint64_t)pml3ptr);
+  pml4ptr[offset.pml4off] = (uint64_t)pml3ptr | TABLEPRESENT | TABLEWRITE;
+
+  sprintf("Derived Pml3Ptr: %x\n", pml4ptr[offset.pml4off] & RMFLAGS);
+
+  sprintf("Pml3Offset: %d\n", offset.pml3off);
 
   pml2ptr = (uint64_t*)pmalloc(1);
-  sprint("\nPml2Ptr: ");
-  htoa((uint64_t)pml3ptr, buf);
-  sprint(buf);
-  memset(buf, 0, 20);
-  // pml3ptr[offset.pml3off] = (uint64_t)pml2ptr | TABLEPRESENT | TABLEWRITE;
+  pml2ptr += KNL_HIGH_VMA;
 
-  sprint("\nPml2Offset: ");
-  htoa(offset.pml2off, buf);
-  sprint(buf);
-  memset(buf, 0, 20);
+  sprintf("Pml2Ptr: %x\n", (uint64_t)pml2ptr);
+  pml3ptr[offset.pml3off] = (uint64_t)pml2ptr | TABLEPRESENT | TABLEWRITE;
 
-  sprint("\nreach4");
+  sprintf("Pml2Offset: %x\n", offset.pml2off);
 
   pml2ptr[offset.pml2off] =
       (uint64_t)0x00000000FD000000 | TABLEPRESENT | TABLEWRITE | TABLEHUGE;
 
-  sprint("\nAddr: ");
-  htoa(pml2ptr[offset.pml2off] & RMFLAGS, buf);
-  sprint(buf);
-  memset(buf, 0, 20);
+  sprintf("Addr: %d\n", pml2ptr[offset.pml2off] & RMFLAGS);
+  sprintf("Bitmap[0]: %d\n", bitmap[0]);
 }
 
 void vfree(uint64_t* vaddr, size_t pages) {

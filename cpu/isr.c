@@ -112,10 +112,7 @@ void isr_handler(registers_t* r) {
   asm volatile("cli");
 
   clear(Black);
-  kprint("Exception: ");
-  kprint_int(r->int_no);
-  kprint(" ");
-  kprint_int(r->err_code);
+  sprintf("Exception: %d %d", r->int_no, r->err_code);
 
   asm volatile("hlt");
 }
