@@ -135,27 +135,27 @@ void test() {
 
   sprint("\nreach2");
 
-  pml3ptr = pmalloc(1);
+  pml3ptr = (uint64_t*)pmalloc(1);
   sprint("\nPml3Ptr: ");
   htoa((uint64_t)pml3ptr, buf);
   sprint(buf);
   memset(buf, 0, 20);
-  pml4ptr[offset.pml4off] = (uint64_t)pml3ptr | TABLEPRESENT | TABLEWRITE;
+  // pml4ptr[offset.pml4off] = (uint64_t)pml3ptr | TABLEPRESENT | TABLEWRITE;
 
   sprint("\nPml3Offset: ");
-  htoa(pml3ptr[offset.pml3off], buf);
+  htoa(offset.pml3off, buf);
   sprint(buf);
   memset(buf, 0, 20);
 
-  pml2ptr = pmalloc(1);
+  pml2ptr = (uint64_t*)pmalloc(1);
   sprint("\nPml2Ptr: ");
   htoa((uint64_t)pml3ptr, buf);
   sprint(buf);
   memset(buf, 0, 20);
-  pml3ptr[offset.pml3off] = (uint64_t)pml2ptr | TABLEPRESENT | TABLEWRITE;
+  // pml3ptr[offset.pml3off] = (uint64_t)pml2ptr | TABLEPRESENT | TABLEWRITE;
 
   sprint("\nPml2Offset: ");
-  htoa(pml2ptr[offset.pml2off], buf);
+  htoa(offset.pml2off, buf);
   sprint(buf);
   memset(buf, 0, 20);
 
@@ -164,7 +164,10 @@ void test() {
   pml2ptr[offset.pml2off] =
       (uint64_t)0x00000000FD000000 | TABLEPRESENT | TABLEWRITE | TABLEHUGE;
 
-  sprint("\nreach5");
+  sprint("\nAddr: ");
+  htoa(pml2ptr[offset.pml2off] & RMFLAGS, buf);
+  sprint(buf);
+  memset(buf, 0, 20);
 }
 
 void vfree(uint64_t* vaddr, size_t pages) {

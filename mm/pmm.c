@@ -41,38 +41,33 @@ void initMem(multiboot_info_t* mbd) {
 }
 
 void* pmalloc(size_t pages) {
-  uint64_t firstBit = 0;
-  uint64_t concurrentBits = 0;
-  uint64_t bitsToAlloc = pages + 1;
-
-  for (uint64_t i = 0; i < bitmapEntries * 64; i++) {
-    if (getAbsoluteBitState(bitmap, i) == 0) {
-      if (concurrentBits == 0) {
-        firstBit = i;
-      }
-
-      concurrentBits++;
-
-      if (bitsToAlloc == concurrentBits) {
+  uint64_t first = 0;
+  uint64_t found = 0;
+  for (int i = 0; i < bitmapEntries * 64; i++) {
+    if (!getAbsoluteBitState(bitmap, i)) {
+      if (!found) {
+        first = i;
+      };
+      found++;
+      if (found == pages) {
         goto alloc;
       }
     } else {
-      firstBit = 0;
-      concurrentBits = 0;
-
+      first = 0;
+      found = 0;
       continue;
     }
   }
 
   return NULL;
 
-alloc:
-  // iterate over bits now that a block has been found
-  for (uint64_t i = firstBit; i < bitsToAlloc; i++) {
+alloc:;
+
+  for (uint64_t i = first; i < pages; i++) {
     setAbsoluteBitState(bitmap, i);
   }
 
-  return (void*)(firstBit * PAGESIZE);
+  return (void*)(first * PAGESIZE + MEMBASE);
 }
 
 void pmfree(void* ptr, size_t pages) {
