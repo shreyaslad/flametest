@@ -111,7 +111,7 @@ char* exception_messages[] = {"Division By Zero",
 void isr_handler(registers_t* r) {
   asm volatile("cli");
 
-  clear();
+  clear(Black);
   kprint("Exception: ");
   kprint_int(r->int_no);
   kprint(" ");

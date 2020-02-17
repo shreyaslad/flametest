@@ -9,9 +9,16 @@
 
 ALIGN_MULTIBOOT equ 1<<0
 MEMINFO equ 1<<1
-FLAGS equ (ALIGN_MULTIBOOT | MEMINFO)
+VIDEO_MODE equ 0x00000004
+
+FLAGS equ (ALIGN_MULTIBOOT | MEMINFO | VIDEO_MODE)
 MAGIC equ 0x1BADB002
 CHECKSUM equ -(MAGIC + FLAGS)
+
+VIDMODE equ 0
+WIDTH equ 1024
+HEIGHT equ 768
+DEPTH equ 32
 
 section .multiboot
     align 4
@@ -19,6 +26,15 @@ section .multiboot
     dd MAGIC
     dd FLAGS
     dd CHECKSUM
+    dd 0
+    dd 0
+    dd 0
+    dd 0
+    dd 0
+    dd VIDMODE
+    dd WIDTH
+    dd HEIGHT
+    dd DEPTH
 
 %macro gen_pd_2mb 3
     %assign i %1
@@ -66,12 +82,8 @@ section .data
 section .bss
     align 16
 
-    global multiboot_header_pointer
-    multiboot_header_pointer:
-        resb 16
-
     stack_bottom:
-        resb 65536
+        resb 4096
     stack_top:
 
 section .data
@@ -113,8 +125,7 @@ section .text
 
     global _start
     _start:
-        mov edi, multiboot_header_pointer - KNL_HIGH_VMA
-        mov DWORD [edi], ebx
+        mov edi, ebx ; Multiboot header
         mov eax, pml4t - KNL_HIGH_VMA
         mov cr3, eax
         ; Paging

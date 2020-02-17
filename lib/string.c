@@ -27,23 +27,23 @@ void itoa(int n, char str[]) {
   reverse(str);
 }
 
-void itoa_uint8(uint8_t n, char str[]) {
+void itoa_uint8(uint8_t num, char* str) {
   uint8_t i = 0;
   do {
-    str[i++] = n % 10 + '0';
-  } while ((n /= 10) > 0);
+    str[i++] = num % 10 + '0';
+  } while ((num /= 10) > 0);
 
   str[i] = '\0';
 
   reverse(str);
 }
 
-void hex_to_ascii(int n, char str[]) {
+void hex_to_ascii(int64_t n, char* str) {
   append(str, '0');
   append(str, 'x');
   char zeros = 0;
 
-  int32_t tmp;
+  int64_t tmp;
   int i;
   for (i = 28; i > 0; i -= 4) {
     tmp = (n >> i) & 0xF;
@@ -63,7 +63,7 @@ void hex_to_ascii(int n, char str[]) {
     append(str, tmp + '0');
 }
 
-void reverse(char s[]) {
+void reverse(char* s) {
   int c, i, j;
   for (i = 0, j = strlen(s) - 1; i < j; i++, j--) {
     c = s[i];
@@ -72,14 +72,14 @@ void reverse(char s[]) {
   }
 }
 
-int strlen(char s[]) {
-  int i = 0;
+uint64_t strlen(char* s) {
+  uint64_t i = 0;
   while (s[i] != '\0')
     ++i;
   return i;
 }
 
-void append(char s[], char n) {
+void append(char* s, char n) {
   int len = strlen(s);
   s[len] = n;
   s[len + 1] = '\0';
@@ -107,13 +107,14 @@ char* strcpy(char* dest, char* src) {
   return saved;
 }
 
-void backspace(char s[]) {
+void backspace(char* s) {
   int len = strlen(s);
   s[len - 1] = '\0';
 }
 
-int strcmp(char* s1, char* s2) {
-  int i;
+uint64_t strcmp(char* s1, char* s2) {
+  uint64_t i;
+
   for (i = 0; s1[i] == s2[i]; i++) {
     if (s1[i] == '\0')
       return 0;
@@ -124,8 +125,8 @@ int strcmp(char* s1, char* s2) {
 
 // Compare the first x number of characters between the two strings. Can be used
 // for handling arguments
-int strcmpl(char s1[], char s2[], unsigned char x) {
-  int i = 0;
+uint64_t strcmpl(char* s1, char* s2, uint8_t x) {
+  uint64_t i = 0;
 
   do {
     if (s1[i] == s2[i]) {
@@ -138,6 +139,40 @@ int strcmpl(char s1[], char s2[], unsigned char x) {
   } while (i < x);
 
   return false;
+}
+
+// lvlibc strtok
+char* strtok(char* str, const char* delimiter) {
+  static char* buffer;
+
+  if (str != NULL) {
+    buffer = str;
+  }
+
+  if (buffer[0] == '\0') {
+    return NULL;
+  }
+
+  char* ret = buffer;
+
+  for (char* b = buffer; *b != '\0'; b++) {
+    for (const char* d = delimiter; *d != '\0'; d++) {
+      if (*b == *d) {
+        *b = '\0';
+        buffer = b + 1;
+
+        // Skip the beginning delimiters
+        if (b == ret) {
+          ret++;
+          continue;
+        }
+
+        return ret;
+      }
+    }
+  }
+
+  return ret;
 }
 
 char removeNull(char* s) {

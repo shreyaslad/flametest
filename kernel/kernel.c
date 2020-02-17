@@ -6,7 +6,15 @@ uint32_t largestUseableMem = 0;
 extern uint64_t __kernel_end;
 
 void kmain(multiboot_info_t* mbd) {
-  disableCursor();
+  args.fbaddr = mbd->framebuffer_addr;
+  args.fbpitch = mbd->framebuffer_pitch;
+  args.fbwidth = mbd->framebuffer_width;
+  args.fbheight = mbd->framebuffer_height;
+  args.fbbpp = mbd->framebuffer_bpp;
+
+  coffset.roffset = mbd->framebuffer_red_field_position;
+  coffset.goffset = mbd->framebuffer_green_field_position;
+  coffset.boffset = mbd->framebuffer_blue_field_position;
 
   isr_install();
   irq_install();
@@ -19,24 +27,16 @@ void kmain(multiboot_info_t* mbd) {
   sprint_uint((uint64_t)mbd->mem_upper);
   sprint("\n");
 
-  clear();
-  drawLogo();
-  wait_s(2);
-
-  clear();
-
-  // formatTime(); rewrite this function
   read_rtc();
 
-  kprint("flameOS\n");
+  clear(White);
+  uint64_t framebuffer_size = mbd->framebuffer_height * mbd->framebuffer_pitch;
 
-  kprint("It is ");
-  // kprint(format);
-  kprint_int(second);
-  kprint(".");
-  kprint("\nuser@flameOS # ");
+  vmap((uint64_t*)&args.fbaddr, (framebuffer_size + 0x1000 - 1) / 0x1000);
 
-  enableCursor();
+  for (uint64_t i = 0; i < 10; i++) {
+    setPixel(100 + i, 100, createColor(White));
+  }
 }
 
 void user_input(char* input) {
@@ -48,7 +48,7 @@ void user_input(char* input) {
 
     kprint(format);
   } else if (strcmp(input, "clear") == 0) {
-    clear();
+    clear(Black);
 
     formatTime();
 
@@ -63,9 +63,9 @@ void user_input(char* input) {
     sprint_uint((uint64_t)addr);
     sprint("\n");
   } else if (strcmp(input, "res") == 0) {
-    getResolution();
+    // getResolution();
   } else if (strcmp(input, "neofetch") == 0) {
-    neofetch(largestUseableMem);
+    // neofetch(largestUseableMem);
   } else if (strcmp(input, "uptime") == 0) {
     calculateUptime();
   } else if (strcmp(input, "drives") == 0) {

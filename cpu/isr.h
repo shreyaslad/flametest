@@ -4,8 +4,10 @@
 #include "idt.h"
 #include "ports.h"
 #include "timer.h"
+#include <drivers/colors.h>
 #include <drivers/keyboard.h>
 #include <drivers/screen.h>
+#include <drivers/vesa.h>
 #include <fs/hdd.h>
 #include <fs/hddw.h>
 #include <stdint.h>

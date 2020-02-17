@@ -141,11 +141,10 @@ void readToBuffer(uint32_t sector) {
 
     *ptr = s;
     ptr++;
-    
+
     *ptr = f;
     ptr++;
   }
-
 }
 
 void read_disk(uint32_t sector) {

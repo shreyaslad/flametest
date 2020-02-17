@@ -9,8 +9,6 @@
 section .text
     global _startup64
     _startup64:
-        mov edi, DWORD [multiboot_header_pointer]
-    
         call kmain ; Call the kernel
         
     _halt:

@@ -9,3 +9,13 @@
 
 node_t root = {"/", NULL, NULL};
 
+char* currentDirPath = "/";
+
+void createFile(char* filename) {
+  // grab the current path
+  // iterate over the directories
+  // create a new node
+  // implement fs
+
+  ;
+}
