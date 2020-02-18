@@ -9,8 +9,9 @@
 
 #include <stdint.h>
 #include <stddef.h>
-#include <drivers/colors.h>
 #include <function.h>
+#include <drivers/colors.h>
+#include <drivers/serial.h>
 
 typedef struct fbargs {
   uint64_t fbaddr;
@@ -22,6 +23,8 @@ typedef struct fbargs {
 
 // setup global MBD params
 fbargs_t args;
+
+uint64_t fired;
 
 void setScreen();
 void setPixel(uint64_t x, uint64_t y, uint32_t color);

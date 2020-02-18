@@ -47,19 +47,14 @@ void kmain(multiboot_info_t* mbd) {
 
   // clear(White);
   uint64_t framebuffer_size = mbd->framebuffer_height * mbd->framebuffer_pitch;
-  sprint("Framebuffer Calc: ");
-  sprint_uint((framebuffer_size + 0x2000000 - 1) / 0x2000000);
-  sprint("\n");
+  sprintf("Framebuffer Calc: %d\n",
+          (framebuffer_size + 0x2000000 - 1) / 0x2000000);
+  sprintf("fb_i: %d\n", 100 * (args.fbpitch / sizeof(uint32_t)) * 100);
   /*vmap((uint64_t*)&mbd->framebuffer_addr,
        (uint64_t*)&mbd->framebuffer_addr,
        (framebuffer_size + 0x2000000 - 1) / 0x2000000);*/
 
   test();
-
-  for (uint64_t i = 0; i < 10; i++) {
-    color_t color = {255, 0, 0};
-    setPixel(10 + i, 10, createColor(color));
-  }
 }
 
 void user_input(char* input) {
@@ -71,7 +66,7 @@ void user_input(char* input) {
 
     kprint(format);
   } else if (strcmp(input, "clear") == 0) {
-    clear(Black);
+    // clear(Black);
 
     formatTime();
 

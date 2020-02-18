@@ -123,9 +123,9 @@ void test() {
 
   sprintf("Pml4Offset: %d\n", offset.pml4off);
 
-  uint64_t* pml3phys = (uint64_t*)0x300000;
+  uint64_t pml3phys = 0x300000;
   uint64_t* pml3virt = (uint64_t*)0xFFFFFFF800300000;
-  uint64_t* pml2phys = (uint64_t*)0x500000;
+  uint64_t pml2phys = 0x500000;
   uint64_t* pml2virt = (uint64_t*)0xFFFFFFF800500000;
 
   sprintf("Pml3Phys: %x | Pml3Virt: %x\n",
@@ -143,6 +143,7 @@ void test() {
   sprintf("Pml2Phys: %x | Pml2Virt: %x\n",
           (uint64_t)pml2phys,
           (uint64_t)pml2virt);
+  sprintf("fired: %d\n", fired);
   pml3virt[offset.pml3off] = (uint64_t)pml2phys | TABLEPRESENT | TABLEWRITE;
 
   sprintf("Pml2Offset: %x\n", offset.pml2off);

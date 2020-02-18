@@ -13,6 +13,7 @@
 #include <function.h>
 #include <string.h>
 #include <drivers/serial.h>
+#include <drivers/vesa.h>
 
 extern uint64_t KNL_HIGH_VMA;
 

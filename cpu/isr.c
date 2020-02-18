@@ -111,7 +111,7 @@ char* exception_messages[] = {"Division By Zero",
 void isr_handler(registers_t* r) {
   asm volatile("cli");
 
-  clear(Black);
+  // clear(Black);
   sprintf("Exception: %d %d", r->int_no, r->err_code);
 
   asm volatile("hlt");
