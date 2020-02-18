@@ -117,37 +117,40 @@ void test() {
   uint64_t* pml4ptr =
       getPML4(); // the pml4 is already created in the bootloader
 
+  pml4ptr = (size_t)(0x000000000010E000 + 0xFFFFFFFF80000000);
+
   sprintf("Pml4Ptr: %x\n", (uint64_t)pml4ptr);
 
   sprintf("Pml4Offset: %d\n", offset.pml4off);
 
-  uint64_t* pml3ptr = NULL;
-  uint64_t* pml2ptr = NULL;
+  uint64_t* pml3phys = (uint64_t*)0x300000;
+  uint64_t* pml3virt = (uint64_t*)0xFFFFFFF800300000;
+  uint64_t* pml2phys = (uint64_t*)0x500000;
+  uint64_t* pml2virt = (uint64_t*)0xFFFFFFF800500000;
 
-  pml3ptr = (uint64_t*)pmalloc(1);
-  pml3ptr += KNL_HIGH_VMA;
-  memset(pml3ptr, 0, PAGESIZE);
+  sprintf("Pml3Phys: %x | Pml3Virt: %x\n",
+          (uint64_t)pml3phys,
+          (uint64_t)pml3virt);
 
-  sprintf("Pml3Ptr: %x\n", (uint64_t)pml3ptr);
-  pml4ptr[offset.pml4off] = (uint64_t)pml3ptr | TABLEPRESENT | TABLEWRITE;
+  pml4ptr[offset.pml4off] = (uint64_t)pml3phys | TABLEPRESENT | TABLEWRITE;
+  // memset(pml3virt, 0, PAGESIZE);
 
   sprintf("Derived Pml3Ptr: %x\n", pml4ptr[offset.pml4off] & RMFLAGS);
-
   sprintf("Pml3Offset: %d\n", offset.pml3off);
 
-  pml2ptr = (uint64_t*)pmalloc(1);
-  pml2ptr += KNL_HIGH_VMA;
-  memset(pml3ptr, 0, PAGESIZE);
+  // memset(pml2virt, 0, PAGESIZE);
 
-  sprintf("Pml2Ptr: %x\n", (uint64_t)pml2ptr);
-  pml3ptr[offset.pml3off] = (uint64_t)pml2ptr | TABLEPRESENT | TABLEWRITE;
+  sprintf("Pml2Phys: %x | Pml2Virt: %x\n",
+          (uint64_t)pml2phys,
+          (uint64_t)pml2virt);
+  pml3virt[offset.pml3off] = (uint64_t)pml2phys | TABLEPRESENT | TABLEWRITE;
 
   sprintf("Pml2Offset: %x\n", offset.pml2off);
 
-  pml2ptr[offset.pml2off] =
+  pml2virt[offset.pml2off] =
       (uint64_t)0x00000000FD000000 | TABLEPRESENT | TABLEWRITE | TABLEHUGE;
 
-  sprintf("Addr: %d\n", pml2ptr[offset.pml2off] & RMFLAGS);
+  sprintf("Addr: %d\n", pml2virt[offset.pml2off] & RMFLAGS);
   sprintf("Bitmap[0]: %d\n", bitmap[0]);
 }
 
