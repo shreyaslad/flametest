@@ -16,8 +16,8 @@ MAGIC equ 0x1BADB002
 CHECKSUM equ -(MAGIC + FLAGS)
 
 VIDMODE equ 0
-WIDTH equ 1024
-HEIGHT equ 768
+WIDTH equ 500
+HEIGHT equ 1000
 DEPTH equ 32
 
 section .multiboot

@@ -15,8 +15,8 @@
 #include "../../cpu/ports.h"
 
 // Screen Dimensions
-#define MAX_ROWS args.fbheight
-#define MAX_COLS args.fbwidth
+#define MAX_ROWS 500
+#define MAX_COLS 1000
 
 typedef struct {
   uint64_t x;

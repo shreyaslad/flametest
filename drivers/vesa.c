@@ -8,8 +8,7 @@
 #include <drivers/vesa.h>
 
 fbargs_t args = {0, 0, 0, 0, 0};
-uint64_t* addr = &args.fbaddr;
-uint64_t fired = 0;
+uint64_t* addr = 0x00000000FD000000;
 
 // epic Roboto-Light bitmap
 uint8_t gylph_bitmap[] = {
@@ -1091,12 +1090,8 @@ uint8_t gylph_bitmap[] = {
 void setScreen() { ; }
 
 void setPixel(uint64_t x, uint64_t y, uint32_t color) {
-  sprintf("Fired setPixel\n");
-  fired++;
   size_t fb_i = x + (args.fbpitch / sizeof(uint32_t)) * y;
-  addr[fb_i] = 0xFFFFFFFF;
-
-  return;
+  addr[fb_i] = color;
 }
 
 void clearPixel(uint64_t x, uint64_t y) {

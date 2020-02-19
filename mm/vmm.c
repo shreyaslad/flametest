@@ -144,9 +144,15 @@ void test() {
           (uint64_t)pml2virt);
   pml3virt[offset.pml3off] = (uint64_t)pml2phys | TABLEPRESENT | TABLEWRITE;
 
-  sprintf("Pml2Offset: %x\n", offset.pml2off);
+  sprintf("Pml2Offset: %d\n", offset.pml2off);
 
   pml2virt[offset.pml2off] =
+      (uint64_t)0x00000000FD000000 | TABLEPRESENT | TABLEWRITE | TABLEHUGE;
+
+  pml2virt[offset.pml2off + 1] =
+      (uint64_t)0x00000000FD000000 | TABLEPRESENT | TABLEWRITE | TABLEHUGE;
+
+  pml2virt[offset.pml2off + 2] =
       (uint64_t)0x00000000FD000000 | TABLEPRESENT | TABLEWRITE | TABLEHUGE;
 
   sprintf("Addr: %d\n", pml2virt[offset.pml2off] & RMFLAGS);

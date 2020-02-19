@@ -16,6 +16,11 @@ void kmain(multiboot_info_t* mbd) {
   coffset.goffset = mbd->framebuffer_green_field_position;
   coffset.boffset = mbd->framebuffer_blue_field_position;
 
+  sprintf("Red: %d | Green: %d | Blue: %d\n",
+          coffset.roffset,
+          coffset.goffset,
+          coffset.boffset);
+
   isr_install();
   irq_install();
 
@@ -55,6 +60,8 @@ void kmain(multiboot_info_t* mbd) {
        (framebuffer_size + 0x2000000 - 1) / 0x2000000);*/
 
   test();
+
+  clear(LightBlue);
 }
 
 void user_input(char* input) {
