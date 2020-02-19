@@ -114,19 +114,16 @@ void vmap(uint64_t* vaddr, uint64_t* paddr, size_t pages) {
 void test() {
   offset_t offset = vtoof((uint64_t*)0x00000000FD000000);
 
-  uint64_t* pml4ptr =
-      getPML4(); // the pml4 is already created in the bootloader
-
-  pml4ptr = (size_t)(0x000000000010E000 + 0xFFFFFFFF80000000);
+  uint64_t* pml4ptr = (uint64_t*)((size_t)((size_t)getPML4() + HIGH_VMA));
 
   sprintf("Pml4Ptr: %x\n", (uint64_t)pml4ptr);
 
   sprintf("Pml4Offset: %d\n", offset.pml4off);
 
   uint64_t pml3phys = 0x300000;
-  uint64_t* pml3virt = (uint64_t*)0xFFFFFFF800300000;
+  uint64_t* pml3virt = (uint64_t*)0xFFFF800000300000;
   uint64_t pml2phys = 0x500000;
-  uint64_t* pml2virt = (uint64_t*)0xFFFFFFF800500000;
+  uint64_t* pml2virt = (uint64_t*)0xFFFF800000500000;
 
   sprintf("Pml3Phys: %x | Pml3Virt: %x\n",
           (uint64_t)pml3phys,
