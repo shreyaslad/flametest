@@ -27,10 +27,10 @@ extern uint64_t KNL_HIGH_VMA;
 #define TABLEHUGE (1 << 7)
 
 typedef struct {
-    uint8_t pml1off;
-    uint8_t pml2off;
-    uint8_t pml3off;
-    uint8_t pml4off;
+    size_t pml1off;
+    size_t pml2off;
+    size_t pml3off;
+    size_t pml4off;
 } offset_t;
 
 void setPML4(uint64_t* PML4);

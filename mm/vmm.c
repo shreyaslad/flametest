@@ -25,12 +25,14 @@ void tlbflush() { setPML4(getPML4()); }
 
 // virtual address to offset
 offset_t vtoof(uint64_t* vaddr) {
-  uint64_t addr = (uint64_t)vaddr;
+  size_t addr = (size_t)vaddr;
 
-  offset_t offset = {.pml4off = (addr >> 39) & 0x1FF,
-                     .pml3off = (addr >> 30) & 0x1FF,
-                     .pml2off = (addr >> 21) & 0x1FF,
-                     .pml1off = (addr >> 12) & 0x1FF};
+  offset_t offset = {
+      .pml4off = (addr & ((size_t)0x1ff << 39)) >> 39,
+      .pml3off = (addr & ((size_t)0x1ff << 30)) >> 30,
+      .pml2off = (addr & ((size_t)0x1ff << 21)) >> 21,
+      .pml1off = (addr & ((size_t)0x1ff << 12)) >> 12,
+  };
 
   return offset;
 }
@@ -140,7 +142,6 @@ void test() {
   sprintf("Pml2Phys: %x | Pml2Virt: %x\n",
           (uint64_t)pml2phys,
           (uint64_t)pml2virt);
-  sprintf("fired: %d\n", fired);
   pml3virt[offset.pml3off] = (uint64_t)pml2phys | TABLEPRESENT | TABLEWRITE;
 
   sprintf("Pml2Offset: %x\n", offset.pml2off);
