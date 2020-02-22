@@ -26,42 +26,22 @@ void kmain(multiboot_info_t* mbd) {
 
   initMem(mbd);
 
-  char buf[20];
-  sprint("\nBitmap Addr: ");
-  htoa((uint64_t)bitmap, buf);
-  sprint(buf);
-  memset(buf, 0, 20);
-
-  sprint("\nMBD Total Mem: ");
-  sprint_uint((uint64_t)mbd->mem_upper);
-
-  sprint("\nFramebuffer: ");
-  htoa(mbd->framebuffer_addr, buf);
-  sprint(buf);
-  memset(buf, 0, 20);
-
-  sprint("\nScreen Width: ");
-  sprint_uint(args.fbwidth);
-  sprint("\nScreen Height: ");
-  sprint_uint(args.fbheight);
-  sprint("\nPitch: ");
-  sprint_uint(args.fbpitch);
-  sprint("\n");
+  sprintf("\nBitmap Addr: %d\n", (uint64_t)bitmap);
+  sprintf("MBD Total Mem: %d\n", mbd->mem_upper);
+  sprintf("Framebuffer: %d\n", mbd->framebuffer_addr);
+  sprintf("Screen: %dx%d | Pitch: %d\n",
+          args.fbwidth,
+          args.fbheight,
+          args.fbpitch);
 
   read_rtc();
-
-  // clear(White);
   uint64_t framebuffer_size = mbd->framebuffer_height * mbd->framebuffer_pitch;
   sprintf("Framebuffer Calc: %d\n",
           (framebuffer_size + 0x2000000 - 1) / 0x2000000);
   sprintf("fb_i: %d\n", 100 * (args.fbpitch / sizeof(uint32_t)) * 100);
-  /*vmap((uint64_t*)&mbd->framebuffer_addr,
-       (uint64_t*)&mbd->framebuffer_addr,
-       (framebuffer_size + 0x2000000 - 1) / 0x2000000);*/
 
   test();
-
-  clear(LightBlue);
+  putChar('a', 10, 10, LightRed, Black);
 }
 
 void user_input(char* input) {

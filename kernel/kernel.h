@@ -16,7 +16,6 @@
 #include <drivers/serial.h>
 #include <drivers/sound.h>
 #include <drivers/time.h>
-#include <drivers/vesa.h>
 #include <fs/hdd.h>
 #include <fs/hddw.h>
 #include <mm/mm.h>

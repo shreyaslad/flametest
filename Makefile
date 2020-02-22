@@ -16,6 +16,9 @@ O_LEVEL = 2
 LDFLAGS = -ffreestanding -O${O_LEVEL} -nostdlib -z max-page-size=0x1000
 
 flame.iso: kernel32.elf
+	rm -rf ./include/freetype2
+	mkdir ./include/freetype2
+	cat ./fonts/freetype-doc-2.10.1.tar.xz | tar x -J -C ./include/freetype2 
 	clang-format-9 -style=file -i **/*.[hc]
 	mkdir -p isodir/boot/grub
 	cp kernel32.elf isodir/boot/flame.bin

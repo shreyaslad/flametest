@@ -25,13 +25,13 @@ void tlbflush() { setPML4(getPML4()); }
 
 // virtual address to offset
 offset_t vtoof(uint64_t* vaddr) {
-  size_t addr = (size_t)vaddr;
+  size_t aa = (size_t)vaddr;
 
   offset_t offset = {
-      .pml4off = (addr & ((size_t)0x1ff << 39)) >> 39,
-      .pml3off = (addr & ((size_t)0x1ff << 30)) >> 30,
-      .pml2off = (addr & ((size_t)0x1ff << 21)) >> 21,
-      .pml1off = (addr & ((size_t)0x1ff << 12)) >> 12,
+      .pml4off = (aa & ((size_t)0x1ff << 39)) >> 39,
+      .pml3off = (aa & ((size_t)0x1ff << 30)) >> 30,
+      .pml2off = (aa & ((size_t)0x1ff << 21)) >> 21,
+      .pml1off = (aa & ((size_t)0x1ff << 12)) >> 12,
   };
 
   return offset;
@@ -114,49 +114,32 @@ void vmap(uint64_t* vaddr, uint64_t* paddr, size_t pages) {
 }
 
 void test() {
-  offset_t offset = vtoof((uint64_t*)0x00000000FD000000);
+  offset_t offset = vtoof(addr);
 
   uint64_t* pml4ptr = (uint64_t*)((size_t)((size_t)getPML4() + HIGH_VMA));
-
-  sprintf("Pml4Ptr: %x\n", (uint64_t)pml4ptr);
-
-  sprintf("Pml4Offset: %d\n", offset.pml4off);
 
   uint64_t pml3phys = 0x300000;
   uint64_t* pml3virt = (uint64_t*)0xFFFF800000300000;
   uint64_t pml2phys = 0x500000;
   uint64_t* pml2virt = (uint64_t*)0xFFFF800000500000;
 
-  sprintf("Pml3Phys: %x | Pml3Virt: %x\n",
-          (uint64_t)pml3phys,
-          (uint64_t)pml3virt);
-
   pml4ptr[offset.pml4off] = (uint64_t)pml3phys | TABLEPRESENT | TABLEWRITE;
-  // memset(pml3virt, 0, PAGESIZE);
-
-  sprintf("Derived Pml3Ptr: %x\n", pml4ptr[offset.pml4off] & RMFLAGS);
-  sprintf("Pml3Offset: %d\n", offset.pml3off);
-
-  // memset(pml2virt, 0, PAGESIZE);
-
-  sprintf("Pml2Phys: %x | Pml2Virt: %x\n",
-          (uint64_t)pml2phys,
-          (uint64_t)pml2virt);
   pml3virt[offset.pml3off] = (uint64_t)pml2phys | TABLEPRESENT | TABLEWRITE;
 
-  sprintf("Pml2Offset: %d\n", offset.pml2off);
-
   pml2virt[offset.pml2off] =
-      (uint64_t)0x00000000FD000000 | TABLEPRESENT | TABLEWRITE | TABLEHUGE;
+      (uint32_t)addr | TABLEPRESENT | TABLEWRITE | TABLEHUGE;
 
   pml2virt[offset.pml2off + 1] =
-      (uint64_t)0x00000000FD000000 | TABLEPRESENT | TABLEWRITE | TABLEHUGE;
+      (uint32_t)addr | TABLEPRESENT | TABLEWRITE | TABLEHUGE;
 
   pml2virt[offset.pml2off + 2] =
-      (uint64_t)0x00000000FD000000 | TABLEPRESENT | TABLEWRITE | TABLEHUGE;
+      (uint32_t)addr | TABLEPRESENT | TABLEWRITE | TABLEHUGE;
 
-  sprintf("Addr: %d\n", pml2virt[offset.pml2off] & RMFLAGS);
-  sprintf("Bitmap[0]: %d\n", bitmap[0]);
+  pml2virt[offset.pml2off + 3] =
+      (uint32_t)addr | TABLEPRESENT | TABLEWRITE | TABLEHUGE;
+
+  pml2virt[offset.pml2off + 4] =
+      (uint32_t)addr | TABLEPRESENT | TABLEWRITE | TABLEHUGE;
 }
 
 void vfree(uint64_t* vaddr, size_t pages) {

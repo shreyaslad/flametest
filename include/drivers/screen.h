@@ -15,8 +15,8 @@
 #include "../../cpu/ports.h"
 
 // Screen Dimensions
-#define MAX_ROWS 500
-#define MAX_COLS 1000
+#define MAX_ROWS 480
+#define MAX_COLS 640
 
 typedef struct {
   uint64_t x;
@@ -30,5 +30,6 @@ void printf(char* message, ...);
 void kprint_int(uint64_t num);
 void kprint_uint8(uint8_t num);
 
+/* Private Kernel API */
 void kprint_backspace();
 void shiftCursorPos(int bruh, int bruh2);
