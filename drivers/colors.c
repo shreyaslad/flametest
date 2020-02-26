@@ -1,12 +1,17 @@
 /*
-    colors.c
-    Copyright Shreyas Lad (PenetratingShot) 2020
+	colors.c
+	Copyright Shreyas Lad (PenetratingShot) 2020
 
-    VESA Colors
+	Colors
 */
 
 #include <drivers/colors.h>
 
+uint8_t vga_entry_color(enum vga_color fg, enum vga_color bg) {
+  return fg | (bg << 4);
+}
+
+/*
 coffset_t colorOffset = {0, 0, 0};
 
 color_t Black = {0, 0, 0};
@@ -28,5 +33,10 @@ color_t White = {255, 255, 255};
 
 uint32_t createColor(color_t color) {
   return color.red << coffset.roffset | color.green << coffset.goffset |
-         color.blue << coffset.boffset;
+		 color.blue << coffset.boffset;
 }
+
+color_t createColorT(uint8_t r, uint8_t g, uint8_t b) {
+  color_t color = {r, g, b};
+  return color;
+}*/

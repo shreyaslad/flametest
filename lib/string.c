@@ -1,9 +1,9 @@
 /*
-                                string.c
-                                Copyright Shreyas Lad (PenetratingShot) 2019
-                                Licensed under the MIT License
+								string.c
+								Copyright Shreyas Lad (PenetratingShot) 2019
+								Licensed under the MIT License
 
-                                Handy string manipulation and conversion
+								Handy string manipulation and conversion
    functions
 */
 
@@ -14,14 +14,14 @@
 void itoa(uint64_t n, char str[]) {
   uint64_t i, sign;
   if ((sign = n) < 0)
-    n = -n;
+	n = -n;
   i = 0;
   do {
-    str[i++] = n % 10 + '0';
+	str[i++] = n % 10 + '0';
   } while ((n /= 10) > 0);
 
   if (sign < 0)
-    str[i++] = '-';
+	str[i++] = '-';
   str[i] = '\0';
 
   reverse(str);
@@ -30,7 +30,7 @@ void itoa(uint64_t n, char str[]) {
 void itoa_uint8(uint8_t num, char* str) {
   uint8_t i = 0;
   do {
-    str[i++] = num % 10 + '0';
+	str[i++] = num % 10 + '0';
   } while ((num /= 10) > 0);
 
   str[i] = '\0';
@@ -46,19 +46,19 @@ void htoa(uint64_t in, char* str) {
   str[pos++] = 'x';
 
   for (uint16_t i = 60; i > 0; i -= 4) {
-    tmp = (uint8_t)((in >> i) & 0xf);
-    if (tmp >= 0xa) {
-      str[pos++] = (tmp - 0xa) + 'A';
-    } else {
-      str[pos++] = tmp + '0';
-    }
+	tmp = (uint8_t)((in >> i) & 0xf);
+	if (tmp >= 0xa) {
+	  str[pos++] = (tmp - 0xa) + 'A';
+	} else {
+	  str[pos++] = tmp + '0';
+	}
   }
 
   tmp = (uint8_t)(in & 0xf);
   if (tmp >= 0xa) {
-    str[pos++] = (tmp - 0xa) + 'A';
+	str[pos++] = (tmp - 0xa) + 'A';
   } else {
-    str[pos++] = tmp + '0';
+	str[pos++] = tmp + '0';
   }
   str[pos] = '\0'; // nullify
 }
@@ -66,16 +66,16 @@ void htoa(uint64_t in, char* str) {
 void reverse(char* s) {
   int c, i, j;
   for (i = 0, j = strlen(s) - 1; i < j; i++, j--) {
-    c = s[i];
-    s[i] = s[j];
-    s[j] = c;
+	c = s[i];
+	s[i] = s[j];
+	s[j] = c;
   }
 }
 
 uint64_t strlen(char* s) {
   uint64_t i = 0;
   while (s[i] != '\0')
-    ++i;
+	++i;
   return i;
 }
 
@@ -89,7 +89,7 @@ char* strcat(char* dest, char* src) {
   char* ptr = dest + strlen(dest);
 
   while (*src != '\0') {
-    *ptr++ = *src++;
+	*ptr++ = *src++;
   }
 
   *ptr = '\0';
@@ -100,7 +100,7 @@ char* strcat(char* dest, char* src) {
 char* strcpy(char* dest, char* src) {
   char* saved = dest;
   while (*src) {
-    *dest++ = *src++;
+	*dest++ = *src++;
   }
 
   *dest = 0;
@@ -116,8 +116,8 @@ uint64_t strcmp(char* s1, char* s2) {
   uint64_t i;
 
   for (i = 0; s1[i] == s2[i]; i++) {
-    if (s1[i] == '\0')
-      return 0;
+	if (s1[i] == '\0')
+	  return 0;
   }
 
   return s1[i] - s2[i];
@@ -129,13 +129,13 @@ uint64_t strcmpl(char* s1, char* s2, uint8_t x) {
   uint64_t i = 0;
 
   do {
-    if (s1[i] == s2[i]) {
-      return true;
-    } else {
-      return false;
-    }
+	if (s1[i] == s2[i]) {
+	  return true;
+	} else {
+	  return false;
+	}
 
-    i++;
+	i++;
   } while (i < x);
 
   return false;
@@ -146,30 +146,30 @@ char* strtok(char* str, const char* delimiter) {
   static char* buffer;
 
   if (str != NULL) {
-    buffer = str;
+	buffer = str;
   }
 
   if (buffer[0] == '\0') {
-    return NULL;
+	return NULL;
   }
 
   char* ret = buffer;
 
   for (char* b = buffer; *b != '\0'; b++) {
-    for (const char* d = delimiter; *d != '\0'; d++) {
-      if (*b == *d) {
-        *b = '\0';
-        buffer = b + 1;
+	for (const char* d = delimiter; *d != '\0'; d++) {
+	  if (*b == *d) {
+		*b = '\0';
+		buffer = b + 1;
 
-        // Skip the beginning delimiters
-        if (b == ret) {
-          ret++;
-          continue;
-        }
+		// Skip the beginning delimiters
+		if (b == ret) {
+		  ret++;
+		  continue;
+		}
 
-        return ret;
-      }
-    }
+		return ret;
+	  }
+	}
   }
 
   return ret;
@@ -185,9 +185,9 @@ void remove(char* s, uint32_t pos) {
   char prev = removeNull("\0");
   char tempE;
   for (uint32_t x = len; x > pos - 2; x--) {
-    tempE = s[x];
-    s[x] = prev;
-    prev = tempE;
+	tempE = s[x];
+	s[x] = prev;
+	prev = tempE;
   }
   s[len - 1] = '\0';
 }

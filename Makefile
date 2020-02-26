@@ -1,8 +1,8 @@
 .PHONY: run clean
 
 C_SOURCES = $(wildcard kernel/*.c drivers/*.c cpu/*.c lib/*.c kernel/commands/*.c fs/*.c mm/*.c )
-HEADERS = $(wildcard kernel/*.h drivers/*.h cpu/*.h kernel/commands/*h fs/*h mm/*.h )
-OBJ = ${C_SOURCES:.c=.o cpu/interrupt.o	} 
+HEADERS = $(wildcard kernel/*.h drivers/*.h cpu/*.h kernel/commands/*h fs/*h mm/*.h fonts/*.h )
+OBJ = ${C_SOURCES:.c=.o cpu/interrupt.o	fonts/font.o } 
 
 ARCH=x86_64
 CROSS=/opt/cross/bin
@@ -10,14 +10,14 @@ CROSS=/opt/cross/bin
 CC = ${CROSS}/${ARCH}-elf-gcc
 GDB = gdb
 CFLAGS = -ggdb -nostdlib -fno-stack-protector -nostartfiles -nodefaultlibs \
-		 -Wall -Wextra -Wno-unused-function -Wno-unused-variable -Wpedantic -ffreestanding -ggdb -std=gnu11 -mcmodel=kernel
+		 -Wall -Wextra -Wno-unused-function -Wno-unused-variable -Wpedantic -ffreestanding -ggdb -std=gnu11 -mcmodel=kernel -Iinclude
 O_LEVEL = 2
 
 LDFLAGS = -ffreestanding -O${O_LEVEL} -nostdlib -z max-page-size=0x1000
 
 flame.iso: kernel32.elf
-	rm -rf ./include/freetype2
-	cat ./fonts/freetype-2.10.1.tar.xz | tar x -J -C ./include/
+	#rm -rf ./include/freetype2
+	#cat ./fonts/freetype-2.10.1.tar.xz | tar x -J -C ./include/
 	clang-format-9 -style=file -i **/*.[hc]
 	mkdir -p isodir/boot/grub
 	cp kernel32.elf isodir/boot/flame.bin
@@ -37,8 +37,11 @@ kernel.elf: startup64.o boot.o ${OBJ}
 cpu/interrupt.o: cpu/interrupt.asm
 	nasm -f elf64 $< -o $@
 
+fonts/font.o: fonts/font.asm
+	nasm -f elf64 $< -o $@
+
 %.o: %.c ${HEADERS}
-	${CC} -Iinclude ${CFLAGS} -c $< -o $@
+	${CC} ${CFLAGS} -c $< -o $@
 
 boot.o: boot.asm
 	nasm -f elf64 boot.asm -o boot.o
@@ -55,5 +58,5 @@ debug: flame.iso kernel.elf
 
 clean:
 	rm -rf kernel.bin *.dis *.o
-	rm -rf kernel/*.o boot/*.bin drivers/*.o boot/*.o cpu/*.o lib/*.o fs/*.o mm/*.o
+	rm -rf kernel/*.o boot/*.bin drivers/*.o boot/*.o cpu/*.o lib/*.o fs/*.o mm/*.o fonts/*.o
 	rm -rf flame.bin flame.elf kernel32.elf isodir/ .vscode/

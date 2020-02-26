@@ -1,10 +1,10 @@
 /*
-                                sound.c
+								sound.c
 
-                                Lets you play a specific frequency from the
+								Lets you play a specific frequency from the
    speaker. You can use cpu/timer.h to time intervals between sounds.
 
-                                FFMPEG anyone?
+								FFMPEG anyone?
 */
 
 #include <drivers/sound.h>
@@ -22,7 +22,7 @@ void play(uint32_t nFrequence) {
 
   tmp = port_byte_in(0x61);
   if (tmp != (tmp | 3)) {
-    port_byte_out(0x61, tmp | 3);
+	port_byte_out(0x61, tmp | 3);
   }
 }
 

@@ -4,4 +4,6 @@ PointerAlignment: Left
 BinPackArguments: false
 AllowAllConstructorInitializersOnNextLine: false
 AllowAllArgumentsOnNextLine: false
+TabWidth: 4
+UseTab: Always
 ...

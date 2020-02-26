@@ -3,22 +3,21 @@
 [extern __kernel_end]
 
 [extern _startup64]
-[extern paging_setup]
 
 %define KNL_HIGH_VMA 0xFFFFFFFF80000000
 
 ALIGN_MULTIBOOT equ 1<<0
 MEMINFO equ 1<<1
-VIDEO_MODE equ 0x00000004
+;VIDEO_MODE equ 0x00000004
 
-FLAGS equ (ALIGN_MULTIBOOT | MEMINFO | VIDEO_MODE)
+FLAGS equ (ALIGN_MULTIBOOT | MEMINFO); | VIDEO_MODE)
 MAGIC equ 0x1BADB002
 CHECKSUM equ -(MAGIC + FLAGS)
 
-VIDMODE equ 0
-WIDTH equ 640
-HEIGHT equ 480
-DEPTH equ 32
+;VIDMODE equ 0
+;WIDTH equ 640
+;HEIGHT equ 480
+;DEPTH equ 32
 
 section .multiboot
     align 4
@@ -26,15 +25,15 @@ section .multiboot
     dd MAGIC
     dd FLAGS
     dd CHECKSUM
-    dd 0
-    dd 0
-    dd 0
-    dd 0
-    dd 0
-    dd VIDMODE
-    dd WIDTH
-    dd HEIGHT
-    dd DEPTH
+    ;dd 0
+    ;dd 0
+    ;dd 0
+    ;dd 0
+    ;dd 0
+    ;dd VIDMODE
+    ;dd WIDTH
+    ;dd HEIGHT
+    ;dd DEPTH
 
 %macro gen_pd_2mb 3
     %assign i %1

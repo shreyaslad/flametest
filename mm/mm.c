@@ -1,8 +1,8 @@
 /*
-                mm.c
-                Copyright Shreyas Lad (PenetratingShot) 2020
+				mm.c
+				Copyright Shreyas Lad (PenetratingShot) 2020
 
-                Kernel Memory Manager
+				Kernel Memory Manager
 */
 
 #include <mm/mm.h>
@@ -20,6 +20,6 @@ void* malloc(size_t bytes) {
 
 void free(void* vaddr) {
   vfree((uint64_t*)vaddr,
-        PAGESIZE); // only frees 1 page leave me alone I'm lazy
+		PAGESIZE); // only frees 1 page leave me alone I'm lazy
   pmfree(getpaddr(vaddr), 1);
 }

@@ -73,40 +73,40 @@ void isr_install() {
 
 /* To print the message which defines every exception */
 char* exception_messages[] = {"Division By Zero",
-                              "Debug",
-                              "Non Maskable Interrupt",
-                              "Breakpoint",
-                              "Into Detected Overflow",
-                              "Out of Bounds",
-                              "Invalid Opcode",
-                              "No Coprocessor",
+							  "Debug",
+							  "Non Maskable Interrupt",
+							  "Breakpoint",
+							  "Into Detected Overflow",
+							  "Out of Bounds",
+							  "Invalid Opcode",
+							  "No Coprocessor",
 
-                              "Double Fault",
-                              "Coprocessor Segment Overrun",
-                              "Bad TSS",
-                              "Segment Not Present",
-                              "Stack Fault",
-                              "General Protection Fault",
-                              "Page Fault",
-                              "Unknown Interrupt",
+							  "Double Fault",
+							  "Coprocessor Segment Overrun",
+							  "Bad TSS",
+							  "Segment Not Present",
+							  "Stack Fault",
+							  "General Protection Fault",
+							  "Page Fault",
+							  "Unknown Interrupt",
 
-                              "Coprocessor Fault",
-                              "Alignment Check",
-                              "Machine Check",
-                              "Reserved",
-                              "Assert Error",
-                              "Reserved",
-                              "Reserved",
-                              "Reserved",
+							  "Coprocessor Fault",
+							  "Alignment Check",
+							  "Machine Check",
+							  "Reserved",
+							  "Assert Error",
+							  "Reserved",
+							  "Reserved",
+							  "Reserved",
 
-                              "Reserved",
-                              "Reserved",
-                              "Reserved",
-                              "Reserved",
-                              "Reserved",
-                              "Reserved",
-                              "Reserved",
-                              "Reserved"};
+							  "Reserved",
+							  "Reserved",
+							  "Reserved",
+							  "Reserved",
+							  "Reserved",
+							  "Reserved",
+							  "Reserved",
+							  "Reserved"};
 
 void isr_handler(registers_t* r) {
   asm volatile("cli");
@@ -125,12 +125,12 @@ void irq_handler(registers_t* r) {
   /* After every interrupt we need to send an EOI to the PICs
    * or they will not send another interrupt again */
   if (r->int_no >= 40)
-    port_byte_out(0xA0, 0x20); /* slave */
+	port_byte_out(0xA0, 0x20); /* slave */
   port_byte_out(0x20, 0x20);   /* master */
   if (interrupt_handlers[r->int_no] != 0) {
-    isr_t handler = interrupt_handlers[r->int_no];
+	isr_t handler = interrupt_handlers[r->int_no];
 
-    handler(r);
+	handler(r);
   }
 }
 

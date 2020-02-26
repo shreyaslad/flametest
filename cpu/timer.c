@@ -28,9 +28,9 @@ void wait(uint32_t ticks) {
   uint32_t prev = tick;
 
   while (tick < prev + ticks) {
-    ;
-    if (tick == prev + ticks)
-      break;
+	;
+	if (tick == prev + ticks)
+	  break;
   }
 }
 
@@ -43,15 +43,15 @@ void wait_s(uint32_t seconds) {
   uint16_t initialSeconds = second;
 
   if (initialSeconds + seconds > 60) {
-    targetSeconds = (initialSeconds + seconds) - 60;
+	targetSeconds = (initialSeconds + seconds) - 60;
   } else {
-    targetSeconds = initialSeconds + seconds;
+	targetSeconds = initialSeconds + seconds;
   }
 
   while (second != targetSeconds) {
-    read_rtc();
+	read_rtc();
 
-    if (second == targetSeconds)
-      break;
+	if (second == targetSeconds)
+	  break;
   }
 }

@@ -16,6 +16,8 @@
 #include <drivers/serial.h>
 #include <drivers/sound.h>
 #include <drivers/time.h>
+#include <drivers/vga.h>
+#include <fonts/font.h>
 #include <fs/hdd.h>
 #include <fs/hddw.h>
 #include <mm/mm.h>

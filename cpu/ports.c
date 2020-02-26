@@ -22,8 +22,8 @@ void port_word_out(uint16_t port, uint16_t data) {
 
 void set_bit(uint8_t* input, uint8_t bit, uint8_t state) {
   if (state == 0) {
-    *input &= ~(1 << bit);
+	*input &= ~(1 << bit);
   } else if (state == 1) {
-    *input = (*input | (1 << bit));
+	*input = (*input | (1 << bit));
   }
 }
